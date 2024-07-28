@@ -41,7 +41,7 @@ export const App: Kaioken.FC<AppProps> = (props) => {
     router.on('navigate', () => headManager.forceUpdate())
   }, [])
 
-  const Children = useMemo(() => {
+  {/* const Children = useMemo(() => {
     if (inertiaCtx.component) {
       const Component = inertiaCtx.component as any;
       const Child = () => (
@@ -64,7 +64,32 @@ export const App: Kaioken.FC<AppProps> = (props) => {
     }
 
     return () => null;
-  }, [inertiaCtx.component, inertiaCtx.page, inertiaCtx.key]);
+  }, [inertiaCtx.component, inertiaCtx.page, inertiaCtx.key]); */}
+
+    let Children: Kaioken.FC = () => null
+
+    if (inertiaCtx.component) {
+      const Component = inertiaCtx.component as any;
+      const Child = () => (
+        <Component {...inertiaCtx.page.props} key={inertiaCtx.key} />
+      );
+      // const child = createElement(inertiaCtx.component as typeof Component, {
+      //   key: inertiaCtx.key,
+      //   ...inertiaCtx.page.props
+      // })
+
+      // @ts-expect-error .layout is not defined on unknown
+      if (typeof inertiaCtx.component.layout === "function") {
+        Children = () => (
+          // @ts-expect-error .layout is not defined on unknown
+          <inertiaCtx.component.layout><Child /></inertiaCtx.component.layout>
+        );
+      } else {
+        Children = Child
+      }
+    }
+
+  
 
   return <PageContext.Provider value={inertiaCtx.page}>
     <HeadContext.Provider value={headManager}>
