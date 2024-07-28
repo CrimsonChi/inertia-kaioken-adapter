@@ -43,8 +43,8 @@ export const App: Kaioken.FC<AppProps> = (props) => {
 
   const Children = useMemo(() => {
     if (inertiaCtx.component) {
-      const Component = inertiaCtx.component as any
-      const _child = () => (
+      const Component = inertiaCtx.component as any;
+      const Child = () => (
         <Component {...inertiaCtx.page.props} key={inertiaCtx.key} />
       );
       // const child = createElement(inertiaCtx.component as typeof Component, {
@@ -53,16 +53,18 @@ export const App: Kaioken.FC<AppProps> = (props) => {
       // })
 
       // @ts-expect-error .layout is not defined on unknown
-      if (typeof inertiaCtx.component.layout === 'function') {
-        // @ts-expect-error .layout is not defined on unknown
-        return () => <inertiaCtx.component.layout>{_child}</inertiaCtx.component.layout>
+      if (typeof inertiaCtx.component.layout === "function") {
+        return () => (
+          // @ts-expect-error .layout is not defined on unknown
+          <inertiaCtx.component.layout><Child /></inertiaCtx.component.layout>
+        );
       }
 
-      return _child;
+      return Child;
     }
 
-    return () => null
-  }, [inertiaCtx.component, inertiaCtx.page, inertiaCtx.key])
+    return () => null;
+  }, [inertiaCtx.component, inertiaCtx.page, inertiaCtx.key]);
 
   return <PageContext.Provider value={inertiaCtx.page}>
     <HeadContext.Provider value={headManager}>
