@@ -1,5 +1,6 @@
 import { renderToString, useEffect, useMemo } from "kaioken"
 import { useHead } from "./context"
+import { getCurrentNode } from "kaioken/dist/utils"
 
 type HeadProps = {
   title?: string
@@ -14,19 +15,20 @@ export const Head: Kaioken.FC<HeadProps> = (props) => {
     }
   }, [provider])
 
-  useEffect(() => {
-    const childrens = [...(props.children as Kaioken.VNode[])].map(
-      el => renderToString(() => ({
-        ...el,
-        props: {
-          ...el.props,
-          inertia: true,
-        }
-      }))
-    )
+  
+  const currentNode = getCurrentNode()
+  console.log(currentNode, currentNode?.ctx)
+  const childrens = [...(props.children as Kaioken.VNode[])].map(
+    el => renderToString(() => ({
+      ...el,
+      props: {
+        ...el.props,
+        inertia: true,
+      }
+    }))
+  )
 
-    provider.update(childrens)
-  })
+  provider.update(childrens)
 
   return null
 }
