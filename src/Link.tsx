@@ -31,7 +31,7 @@ const getVisitOptions = <T extends keyof JSX.IntrinsicElements = 'a',>(props: Li
   }
 }
 
-export const Link: Kaioken.FC<LinkProps<'a'>> = (props) => {
+export const Link = <T extends keyof JSX.IntrinsicElements = 'a',>(props: Kaioken.FCProps<LinkProps<T>>) => {
   const as = props.as ?? 'a'
   const method = props.method ?? 'get'
   const visitOptions = useMemo(() => getVisitOptions(props), Object.values(props))
