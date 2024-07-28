@@ -58,8 +58,8 @@ export const Link = <T extends keyof JSX.IntrinsicElements = 'a',>(props: Kaioke
     }
   }, [as, props.href, method])
 
-  const onClick = (self: GlobalEventHandlers, event: MouseEvent) => {
-    props.onclick?.bind(self)?.(event)
+  function onClick (this: GlobalEventHandlers, event: MouseEvent) {
+    props.onclick?.bind(this)?.(event)
     if (shouldIntercept(event as unknown as KeyboardEvent)) {
       event.preventDefault();
 
