@@ -14,7 +14,7 @@ export const App: Kaioken.FC<AppProps> = (props) => {
   const [inertiaCtx, set] = useState({
     component: props.initialComponent as unknown,
     page: props.initialPage as Page,
-    key: null as number | null,
+    key: undefined as number | undefined,
   })
 
   const headManager = useMemo(() => {
@@ -29,16 +29,16 @@ export const App: Kaioken.FC<AppProps> = (props) => {
     router.init({
       initialPage: props.initialPage,
       resolveComponent: props.resolveComponent,
-      swapComponent: async ({ component, page, preserveState }) => {
+      swapComponent: async ({ component, page }) => {
         set(() => ({
           component,
           page,
-          key: preserveState ? inertiaCtx.key : Date.now(),
+          key: undefined,
         }))
       }
     })
 
-    router.on('navigate', () => headManager.forceUpdate())
+    return router.on('navigate', () => headManager.forceUpdate())
   }, [])
 
   {/* const Children = useMemo(() => {
