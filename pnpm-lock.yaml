@@ -11,6 +11,9 @@ importers:
       '@inertiajs/core':
         specifier: ^1.2.0
         version: 1.2.0
+      inertia-kaioken-adapter:
+        specifier: 1.0.2-7
+        version: 1.0.2-7(axios@1.7.2)(kaioken@0.24.1)(vite-plugin-kaioken@0.7.1(kaioken@0.24.1))
       lodash.isequal:
         specifier: ^4.5.0
         version: 4.5.0
@@ -838,6 +841,13 @@ packages:
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
+
+  inertia-kaioken-adapter@1.0.2-7:
+    resolution: {integrity: sha512-auMbBwjB9a5Tyvd117eM1A0nKChSDbP6a8M9YitbTe+39fgdlRkMK/4HVSPFjHER1KWdZOULGYGuXXTcXBeYaw==}
+    peerDependencies:
+      axios: ^1.7.2
+      kaioken: ^0.24.1
+      vite-plugin-kaioken: ^0.7.1
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
@@ -2061,6 +2071,16 @@ snapshots:
   import-lazy@4.0.0: {}
 
   imurmurhash@0.1.4: {}
+
+  inertia-kaioken-adapter@1.0.2-7(axios@1.7.2)(kaioken@0.24.1)(vite-plugin-kaioken@0.7.1(kaioken@0.24.1)):
+    dependencies:
+      '@inertiajs/core': 1.2.0
+      axios: 1.7.2
+      kaioken: 0.24.1
+      lodash.isequal: 4.5.0
+      vite-plugin-kaioken: 0.7.1(kaioken@0.24.1)
+    transitivePeerDependencies:
+      - debug
 
   inflight@1.0.6:
     dependencies:
