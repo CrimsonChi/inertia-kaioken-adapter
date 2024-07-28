@@ -1,5 +1,5 @@
 import { createHeadManager, Page, PageResolver, router } from "@inertiajs/core"
-import { Component, createElement, useEffect, useMemo, useState } from "kaioken"
+import { useEffect, useMemo, useState } from "kaioken"
 import { HeadContext, PageContext } from "./context"
 
 type AppProps = {
@@ -41,30 +41,32 @@ export const App: Kaioken.FC<AppProps> = (props) => {
     router.on('navigate', () => headManager.forceUpdate())
   }, [])
 
-  const renderChildren = useMemo(() => {
+  const Children = useMemo(() => {
     if (inertiaCtx.component) {
-      const child = createElement(inertiaCtx.component as typeof Component, {
-        key: inertiaCtx.key,
-        ...inertiaCtx.page.props
-      })
+      const Component = inertiaCtx.component as any
+      const _child = () => (
+        <Component {...inertiaCtx.page.props} key={inertiaCtx.key} />
+      );
+      // const child = createElement(inertiaCtx.component as typeof Component, {
+      //   key: inertiaCtx.key,
+      //   ...inertiaCtx.page.props
+      // })
 
       // @ts-expect-error .layout is not defined on unknown
       if (typeof inertiaCtx.component.layout === 'function') {
         // @ts-expect-error .layout is not defined on unknown
-        return createElement(inertiaCtx.component.layout, {
-          children: child,
-        })
+        return () => <inertiaCtx.component.layout>{_child}</inertiaCtx.component.layout>
       }
 
-      return child
+      return _child;
     }
 
-    return undefined
-  }, [inertiaCtx])
+    return () => null
+  }, [inertiaCtx.component, inertiaCtx.page, inertiaCtx.key])
 
   return <PageContext.Provider value={inertiaCtx.page}>
     <HeadContext.Provider value={headManager}>
-      {renderChildren}
+      <Children />
     </HeadContext.Provider>
   </PageContext.Provider>
 }
