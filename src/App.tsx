@@ -1,5 +1,5 @@
 import { createHeadManager, Page, PageResolver, router } from "@inertiajs/core"
-import { useEffect, useMemo, useState } from "kaioken"
+import { Component, createElement, useEffect, useMemo, useState } from "kaioken"
 import { HeadContext, PageContext } from "./context"
 
 type AppProps = {
@@ -29,71 +29,42 @@ export const App: Kaioken.FC<AppProps> = (props) => {
     router.init({
       initialPage: props.initialPage,
       resolveComponent: props.resolveComponent,
-      swapComponent: async ({ component, page }) => {
+      swapComponent: async ({ component, page, preserveState }) => {
         set(() => ({
           component,
           page,
-          key: undefined,
+          key: preserveState ? inertiaCtx.key : Date.now(),
         }))
       }
     })
 
-    return router.on('navigate', () => headManager.forceUpdate())
+    router.on('navigate', () => headManager.forceUpdate())
   }, [])
 
-  {/* const Children = useMemo(() => {
+  const renderChildren = useMemo(() => {
     if (inertiaCtx.component) {
-      const Component = inertiaCtx.component as any;
-      const Child = () => (
-        <Component {...inertiaCtx.page.props} key={inertiaCtx.key} />
-      );
-      // const child = createElement(inertiaCtx.component as typeof Component, {
-      //   key: inertiaCtx.key,
-      //   ...inertiaCtx.page.props
-      // })
+      const child = createElement(inertiaCtx.component as typeof Component, {
+        key: inertiaCtx.key,
+        ...inertiaCtx.page.props
+      })
 
       // @ts-expect-error .layout is not defined on unknown
-      if (typeof inertiaCtx.component.layout === "function") {
-        return () => (
-          // @ts-expect-error .layout is not defined on unknown
-          <inertiaCtx.component.layout><Child /></inertiaCtx.component.layout>
-        );
+      if (typeof inertiaCtx.component.layout === 'function') {
+        // @ts-expect-error .layout is not defined on unknown
+        return createElement(inertiaCtx.component.layout, {
+          children: child,
+        })
       }
 
-      return Child;
+      return child
     }
 
-    return () => null;
-  }, [inertiaCtx.component, inertiaCtx.page, inertiaCtx.key]); */}
-
-    let Children: Kaioken.FC = () => null
-
-    if (inertiaCtx.component) {
-      const Component = inertiaCtx.component as any;
-      const Child = () => (
-        <Component {...inertiaCtx.page.props} key={inertiaCtx.key} />
-      );
-      // const child = createElement(inertiaCtx.component as typeof Component, {
-      //   key: inertiaCtx.key,
-      //   ...inertiaCtx.page.props
-      // })
-
-      // @ts-expect-error .layout is not defined on unknown
-      if (typeof inertiaCtx.component.layout === "function") {
-        Children = () => (
-          // @ts-expect-error .layout is not defined on unknown
-          <inertiaCtx.component.layout><Child /></inertiaCtx.component.layout>
-        );
-      } else {
-        Children = Child
-      }
-    }
-
-  
+    return undefined
+  }, [inertiaCtx.component, inertiaCtx.key, inertiaCtx.page])
 
   return <PageContext.Provider value={inertiaCtx.page}>
     <HeadContext.Provider value={headManager}>
-      <Children />
+      {renderChildren}
     </HeadContext.Provider>
   </PageContext.Provider>
 }
