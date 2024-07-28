@@ -48,7 +48,7 @@ export const Link = <T extends keyof JSX.IntrinsicElements = 'a',>(props: Kaioke
     }
 
     return copy
-  }, Object.values(visitOptions))
+  }, Object.values(props))
 
   useEffect(() => {
     if (as === 'a' && method !== 'get') {
