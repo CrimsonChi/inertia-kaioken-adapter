@@ -14,7 +14,7 @@ export const Head: Kaioken.FC<HeadProps> = (props) => {
     }
   }, [provider])
 
-  const childrens = [...(props.children as Kaioken.VNode[])].map(
+  const childrens = [...((props.children ?? []) as Kaioken.VNode[])].map(
     el => renderToString(() => ({
       ...el,
       props: {
@@ -23,6 +23,10 @@ export const Head: Kaioken.FC<HeadProps> = (props) => {
       }
     }))
   )
+
+  if (props.title) {
+    childrens.splice(0, 0, `<title inertia="true">${props.title}</title>`)
+  }
 
   provider.update(childrens)
   return null

@@ -11,6 +11,9 @@ importers:
       '@inertiajs/core':
         specifier: ^1.2.0
         version: 1.2.0
+      inertia-kaioken-adapter:
+        specifier: 1.0.2-7
+        version: 1.0.2-7(axios@1.7.2)(kaioken@0.24.2)(vite-plugin-kaioken@0.7.1(kaioken@0.24.2))
       lodash.isequal:
         specifier: ^4.5.0
         version: 4.5.0
@@ -37,8 +40,8 @@ importers:
         specifier: ^0.4.7
         version: 0.4.9(eslint@8.57.0)
       kaioken:
-        specifier: ^0.24.1
-        version: 0.24.1
+        specifier: ^0.24.2
+        version: 0.24.2
       typescript:
         specifier: ^5.2.2
         version: 5.5.4
@@ -50,7 +53,7 @@ importers:
         version: 4.0.0-beta.1(rollup@4.19.0)(typescript@5.5.4)(vite@5.3.4)
       vite-plugin-kaioken:
         specifier: ^0.7.1
-        version: 0.7.1(kaioken@0.24.1)
+        version: 0.7.1(kaioken@0.24.2)
 
 packages:
 
@@ -839,6 +842,13 @@ packages:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
 
+  inertia-kaioken-adapter@1.0.2-7:
+    resolution: {integrity: sha512-auMbBwjB9a5Tyvd117eM1A0nKChSDbP6a8M9YitbTe+39fgdlRkMK/4HVSPFjHER1KWdZOULGYGuXXTcXBeYaw==}
+    peerDependencies:
+      axios: ^1.7.2
+      kaioken: ^0.24.1
+      vite-plugin-kaioken: ^0.7.1
+
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
     deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
@@ -891,8 +901,8 @@ packages:
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
 
-  kaioken@0.24.1:
-    resolution: {integrity: sha512-+2hBuVF/4KaCz5ocEGGYX6wuNdAV3SYOymidvhtTfaDmdCLeb8/pHJDxf2bu8kgqhipDtDCKArSpFc3jrhnw7g==}
+  kaioken@0.24.2:
+    resolution: {integrity: sha512-dc9VdkqeASBQFlGciYYnd6fcGJ8BV9ChnfMNXAlWEXVfboEvZbwoLQdUP4Ow7tjoJUXWZ1ho86zl9CXQ813tgw==}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -2062,6 +2072,16 @@ snapshots:
 
   imurmurhash@0.1.4: {}
 
+  inertia-kaioken-adapter@1.0.2-7(axios@1.7.2)(kaioken@0.24.2)(vite-plugin-kaioken@0.7.1(kaioken@0.24.2)):
+    dependencies:
+      '@inertiajs/core': 1.2.0
+      axios: 1.7.2
+      kaioken: 0.24.2
+      lodash.isequal: 4.5.0
+      vite-plugin-kaioken: 0.7.1(kaioken@0.24.2)
+    transitivePeerDependencies:
+      - debug
+
   inflight@1.0.6:
     dependencies:
       once: 1.4.0
@@ -2103,7 +2123,7 @@ snapshots:
     optionalDependencies:
       graceful-fs: 4.2.11
 
-  kaioken@0.24.1: {}
+  kaioken@0.24.2: {}
 
   keyv@4.5.4:
     dependencies:
@@ -2396,9 +2416,9 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-plugin-kaioken@0.7.1(kaioken@0.24.1):
+  vite-plugin-kaioken@0.7.1(kaioken@0.24.2):
     dependencies:
-      kaioken: 0.24.1
+      kaioken: 0.24.2
 
   vite@5.3.4:
     dependencies:

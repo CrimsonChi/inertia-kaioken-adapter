@@ -1,24 +1,55 @@
 import { router, shouldIntercept, VisitOptions } from '@inertiajs/core'
-import { createElement, useEffect } from 'kaioken'
+import { createElement, useEffect, useMemo } from 'kaioken'
+import { ElementProps } from 'kaioken'
 
-type LinkProps = VisitOptions & { 
-  as?: string, 
+type LinkProps<T extends keyof JSX.IntrinsicElements> = VisitOptions & { 
+  as?: T, 
   href: string, 
-  onClick?: (event: MouseEvent | KeyboardEvent) => void 
+} & ElementProps<T>
+
+const getVisitOptions = <T extends keyof JSX.IntrinsicElements = 'a',>(props: LinkProps<T>): VisitOptions => {
+  return {
+    method: props.method,
+    data: props.data,
+    replace: props.replace,
+    preserveScroll: props.preserveScroll,
+    preserveState: props.preserveState,
+    only: props.only,
+    except: props.except,
+    headers: props.headers,
+    errorBag: props.errorBag,
+    forceFormData: props.forceFormData,
+    queryStringArrayFormat: props.queryStringArrayFormat,
+    onCancelToken: props.onCancelToken,
+    onBefore: props.onBefore,
+    onStart: props.onStart,
+    onProgress: props.onProgress,
+    onFinish: props.onFinish,
+    onCancel: props.onCancel,
+    onSuccess: props.onSuccess,
+    onError: props.onError,
+  }
 }
 
-const getVisitOptions = (props: LinkProps): VisitOptions => {
-  const copy: Partial<LinkProps> = { ...props }
-  if (copy.href) delete copy.href
-  if (copy.as) delete copy.as
-  if (copy.onClick) delete copy.onClick
-
-  return copy as VisitOptions
-}
-
-export const Link: Kaioken.FC<LinkProps> = (props) => {
+export const Link = <T extends keyof JSX.IntrinsicElements = 'a',>(props: Kaioken.FCProps<LinkProps<T>>) => {
   const as = props.as ?? 'a'
   const method = props.method ?? 'get'
+  const visitOptions = useMemo(() => getVisitOptions(props), Object.values(props))
+  const elmProps = useMemo(() => {
+    const copy = { ...props } as Partial<typeof props>
+    for (const [key] of Object.entries(visitOptions)) {
+      // @ts-expect-error this is an unsafe operation
+      delete copy[key]
+    }
+
+    delete copy['as']
+    if (copy.href) {
+      delete copy['href']
+    }
+
+    return copy
+  }, Object.values(props))
+
   useEffect(() => {
     if (as === 'a' && method !== 'get') {
       console.warn(
@@ -27,18 +58,19 @@ export const Link: Kaioken.FC<LinkProps> = (props) => {
     }
   }, [as, props.href, method])
 
-  const onClick = (event: KeyboardEvent) => {
-    props.onClick?.(event)
-    if (shouldIntercept(event)) {
+  function onClick (this: GlobalEventHandlers, event: MouseEvent) {
+    props.onclick?.bind(this)?.(event)
+    if (shouldIntercept(event as unknown as KeyboardEvent)) {
       event.preventDefault();
 
-      router.visit(props.href, getVisitOptions(props))
+      router.visit(props.href, visitOptions)
     }
   }
 
   return createElement(
     props.as ?? 'a',
     {
+      ...elmProps,
       onclick: onClick,
       href: as === 'a' ? props.href : undefined,
     },

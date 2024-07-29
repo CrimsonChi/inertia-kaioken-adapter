@@ -14,7 +14,7 @@ export const App: Kaioken.FC<AppProps> = (props) => {
   const [inertiaCtx, set] = useState({
     component: props.initialComponent as unknown,
     page: props.initialPage as Page,
-    key: null as number | null,
+    key: undefined as number | undefined,
   })
 
   const headManager = useMemo(() => {
@@ -60,7 +60,7 @@ export const App: Kaioken.FC<AppProps> = (props) => {
     }
 
     return undefined
-  }, [inertiaCtx])
+  }, [inertiaCtx.component, inertiaCtx.key, inertiaCtx.page])
 
   return <PageContext.Provider value={inertiaCtx.page}>
     <HeadContext.Provider value={headManager}>
