@@ -68,3 +68,5 @@ export const App: Kaioken.FC<AppProps> = (props) => {
     </HeadContext.Provider>
   </PageContext.Provider>
 }
+
+App.displayName = 'InertiaApp'
