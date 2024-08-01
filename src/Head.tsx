@@ -14,6 +14,7 @@ export const Head: Kaioken.FC<HeadProps> = (props) => {
     }
   }, [provider])
 
+  console.log(props.children)
   const childrens = [...((props.children ?? []) as Kaioken.VNode[])].map(
     el => renderToString(() => ({
       ...el,
