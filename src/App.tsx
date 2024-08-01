@@ -29,11 +29,11 @@ export const App: Kaioken.FC<AppProps> = (props) => {
     router.init({
       initialPage: props.initialPage,
       resolveComponent: props.resolveComponent,
-      swapComponent: async ({ component, page, preserveState }) => {
+      swapComponent: async ({ component, page }) => {
         set(() => ({
           component,
           page,
-          key: preserveState ? inertiaCtx.key : Date.now(),
+          key: undefined,
         }))
       }
     })
