@@ -12,7 +12,7 @@ export default defineConfig({
     },
 
     rollupOptions: {
-      external: ['kaioken', 'kaioken/utils.js', '@inertiajs/core'],
+      external: ['kaioken', 'kaioken/utils', '@inertiajs/core'],
       output: {
         globals: {
           "kaioken": 'Kaioken',
