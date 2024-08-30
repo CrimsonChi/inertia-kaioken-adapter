@@ -41,6 +41,8 @@ export const App: Kaioken.FC<AppProps> = (props) => {
     router.on('navigate', () => headManager.forceUpdate())
   }, [])
 
+  // @ts-expect-error layout
+  const layout = inertiaCtx?.component?.layout
   const renderChildren = useMemo(() => {
     if (inertiaCtx.component) {
       const child = createElement(inertiaCtx.component as typeof Component, {
@@ -60,7 +62,7 @@ export const App: Kaioken.FC<AppProps> = (props) => {
     }
 
     return undefined
-  }, [inertiaCtx.component, inertiaCtx.key, inertiaCtx.page])
+  }, [inertiaCtx.component, inertiaCtx.key, inertiaCtx.page, layout])
 
   return <PageContext.Provider value={inertiaCtx.page}>
     <HeadContext.Provider value={headManager}>
