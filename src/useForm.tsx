@@ -52,7 +52,9 @@ export default function useForm<TForm extends FormDataType>(
   )
   const cancelToken = useRef<{ cancel: VoidFunction } | null>(null)
   const recentlySuccessfulTimeoutId = useRef<number | null>(null)
+  console.log('[inertia-adapter] rememberKey', rememberKey)
   const [data, setData] = rememberKey ? useRemember(defaults, `${rememberKey}:data`) : useState(defaults)
+  console.log('[inertia-adapter] data', data)
   const [errors, setErrors] = rememberKey
     ? useRemember({} as Partial<Record<keyof TForm, string[]>>, `${rememberKey}:errors`)
     : useState({} as Partial<Record<keyof TForm, string[]>>)
