@@ -23,11 +23,11 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
-    "kaioken": "0.27.1-1",
+    "kaioken": "0.28.4",
     "typescript": "^5.2.2",
     "vite": "^5.3.4",
     "vite-plugin-dts": "4.0.0-beta.1",
-    "vite-plugin-kaioken": "0.9.0"
+    "vite-plugin-kaioken": "0.10.6"
   },
   "dependencies": {
     "@inertiajs/core": "^1.2.0",
