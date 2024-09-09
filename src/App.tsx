@@ -1,5 +1,5 @@
 import { createHeadManager, Page, PageResolver, router } from "@inertiajs/core"
-import { Component, createElement, useEffect, useMemo, useState } from "kaioken"
+import { createElement, useEffect, useMemo, useState } from "kaioken"
 import { HeadContext, PageContext } from "./context"
 
 type AppProps = {
@@ -45,7 +45,7 @@ export const App: Kaioken.FC<AppProps> = (props) => {
   const layout = inertiaCtx?.component?.layout
   const renderChildren = useMemo(() => {
     if (inertiaCtx.component) {
-      const child = createElement(inertiaCtx.component as typeof Component, {
+      const child = createElement(inertiaCtx.component as Kaioken.FC, {
         key: inertiaCtx.key,
         ...inertiaCtx.page.props
       })
