@@ -37,8 +37,8 @@ importers:
         specifier: ^0.4.7
         version: 0.4.9(eslint@8.57.0)
       kaioken:
-        specifier: 0.28.4
-        version: 0.28.4
+        specifier: 0.29.5
+        version: 0.29.5
       typescript:
         specifier: ^5.2.2
         version: 5.5.4
@@ -49,8 +49,8 @@ importers:
         specifier: 4.0.0-beta.1
         version: 4.0.0-beta.1(rollup@4.19.0)(typescript@5.5.4)(vite@5.3.4)
       vite-plugin-kaioken:
-        specifier: 0.10.6
-        version: 0.10.6(kaioken@0.28.4)
+        specifier: 0.10.7
+        version: 0.10.7(kaioken@0.29.5)
 
 packages:
 
@@ -891,8 +891,8 @@ packages:
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
 
-  kaioken@0.28.4:
-    resolution: {integrity: sha512-xFJhVj4CyTHUnDKm/twSTgH64aYUJ9GbVWstdXRgfCG/WGabrmcg5icXbQLCBO6QvJ5M4JwCOVNhGtCc1RP0zA==}
+  kaioken@0.29.5:
+    resolution: {integrity: sha512-9fjwq5FdXT4QEI5Tn355lbuvdECmPIVjfCJKiS7GpYmFhwEbC4EPyXgP14HLhmSjGIwuWog3akkuwdNWXkKbpQ==}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -1203,8 +1203,8 @@ packages:
       vite:
         optional: true
 
-  vite-plugin-kaioken@0.10.6:
-    resolution: {integrity: sha512-TeMfrp1u3u5RkXv3lRSA0x/ao2knni36fXqgkmCY1yNtD8iURkMkOcr9z/6JEnxWnjBO3rgRAjTFSurg7oYA1Q==}
+  vite-plugin-kaioken@0.10.7:
+    resolution: {integrity: sha512-IyhNkERzoVlqrmXIAzYvXLALdWyLVNDqGi+UyTuwy9sifUWlRSEX88rK4yDGE4tWQiO9AkRLTVBwgoZKtD7ePQ==}
     peerDependencies:
       kaioken: '>=0.28.4'
 
@@ -2103,7 +2103,7 @@ snapshots:
     optionalDependencies:
       graceful-fs: 4.2.11
 
-  kaioken@0.28.4: {}
+  kaioken@0.29.5: {}
 
   keyv@4.5.4:
     dependencies:
@@ -2396,9 +2396,9 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-plugin-kaioken@0.10.6(kaioken@0.28.4):
+  vite-plugin-kaioken@0.10.7(kaioken@0.29.5):
     dependencies:
-      kaioken: 0.28.4
+      kaioken: 0.29.5
 
   vite@5.3.4:
     dependencies:
