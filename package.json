@@ -23,11 +23,11 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
-    "kaioken": "0.29.5",
+    "kaioken": "0.31.0",
     "typescript": "^5.2.2",
     "vite": "^5.3.4",
     "vite-plugin-dts": "4.0.0-beta.1",
-    "vite-plugin-kaioken": "0.10.7"
+    "vite-plugin-kaioken": "0.13.0"
   },
   "dependencies": {
     "@inertiajs/core": "^1.2.0",
@@ -35,7 +35,7 @@
   },
   "peerDependencies": {
     "axios": "^1.7.2",
-    "kaioken": "^0.26.0",
-    "vite-plugin-kaioken": "^0.8.0"
+    "kaioken": "^0.31.0",
+    "vite-plugin-kaioken": "^0.13.0"
   }
 }
