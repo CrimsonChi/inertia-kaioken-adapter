@@ -23,14 +23,14 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
-    "kaioken": "0.31.0",
+    "kaioken": "0.35.9",
     "typescript": "^5.2.2",
     "vite": "^5.3.4",
     "vite-plugin-dts": "4.0.0-beta.1",
-    "vite-plugin-kaioken": "0.13.0"
+    "vite-plugin-kaioken": "0.15.0"
   },
   "dependencies": {
-    "@inertiajs/core": "^1.2.0",
+    "@inertiajs/core": "^2.0.3",
     "lodash.isequal": "^4.5.0"
   },
   "peerDependencies": {

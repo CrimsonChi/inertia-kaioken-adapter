@@ -1,79 +1,238 @@
-import { router, shouldIntercept, VisitOptions } from '@inertiajs/core'
-import { createElement, useEffect, useMemo } from 'kaioken'
-import { ElementProps } from 'kaioken'
+import { FormDataConvertible, LinkPrefetchOption, Method, mergeDataIntoQueryString, router, shouldIntercept, VisitOptions } from '@inertiajs/core'
+import { createElement, ElementProps, useEffect, useMemo, useRef, useSignal } from 'kaioken'
+import { noop } from './utils'
 
-type LinkProps<T extends keyof JSX.IntrinsicElements> = VisitOptions & { 
-  as?: T, 
-  href: string, 
-} & ElementProps<T>
-
-const getVisitOptions = <T extends keyof JSX.IntrinsicElements = 'a',>(props: LinkProps<T>): VisitOptions => {
-  return {
-    method: props.method,
-    data: props.data,
-    replace: props.replace,
-    preserveScroll: props.preserveScroll,
-    preserveState: props.preserveState,
-    only: props.only,
-    except: props.except,
-    headers: props.headers,
-    errorBag: props.errorBag,
-    forceFormData: props.forceFormData,
-    queryStringArrayFormat: props.queryStringArrayFormat,
-    onCancelToken: props.onCancelToken,
-    onBefore: props.onBefore,
-    onStart: props.onStart,
-    onProgress: props.onProgress,
-    onFinish: props.onFinish,
-    onCancel: props.onCancel,
-    onSuccess: props.onSuccess,
-    onError: props.onError,
-  }
+type BaseInertiaLinkProps = {
+  as?: keyof JSX.IntrinsicElements
+  data?: Record<string, FormDataConvertible>
+  href: string
+  method?: VisitOptions['method']
+  headers?: VisitOptions['headers']
+  onclick?: GlobalEventHandlers['onclick']
+  preserveScroll?: VisitOptions['preserveScroll']
+  preserveState?: VisitOptions['preserveState']
+  replace?: VisitOptions['replace']
+  only?: VisitOptions['only']
+  except?: VisitOptions['except']
+  onCancelToken?: VisitOptions['onCancelToken']
+  onBefore?: VisitOptions['onBefore']
+  onStart?: VisitOptions['onStart']
+  onProgress?: VisitOptions['onProgress']
+  onFinish?: VisitOptions['onFinish']
+  onCancel?: VisitOptions['onCancel']
+  onSuccess?: VisitOptions['onSuccess']
+  onError?: VisitOptions['onError']
+  queryStringArrayFormat?: VisitOptions['queryStringArrayFormat']
+  async?: VisitOptions['async']
+  cacheFor?: number | string
+  prefetch?: boolean | LinkPrefetchOption | LinkPrefetchOption[]
 }
 
-export const Link = <T extends keyof JSX.IntrinsicElements = 'a',>(props: Kaioken.FCProps<LinkProps<T>>) => {
-  const as = props.as ?? 'a'
-  const method = props.method ?? 'get'
-  const visitOptions = useMemo(() => getVisitOptions(props), Object.values(props))
-  const elmProps = useMemo(() => {
-    const copy = { ...props } as Partial<typeof props>
-    for (const [key] of Object.entries(visitOptions)) {
-      // @ts-expect-error this is an unsafe operation
-      delete copy[key]
+export type InertiaLinkProps<T extends keyof JSX.IntrinsicElements = 'a'> = BaseInertiaLinkProps &
+  Omit<ElementProps<T>, keyof BaseInertiaLinkProps>
+
+
+export const Link = <T extends keyof JSX.IntrinsicElements = 'a'>({
+  children,
+  as = 'a',
+  data = {},
+  href,
+  method = 'get',
+  preserveScroll = false,
+  preserveState = undefined,
+  replace = false,
+  only = [],
+  except = [],
+  headers = {},
+  queryStringArrayFormat = 'brackets',
+  async = false,
+  onclick = noop,
+  onCancelToken = noop,
+  onBefore = noop,
+  onStart = noop,
+  onProgress = noop,
+  onFinish = noop,
+  onCancel = noop,
+  onSuccess = noop,
+  onError = noop,
+  prefetch = false,
+  cacheFor = 0,
+  ...props
+}: Kaioken.FCProps<InertiaLinkProps<T>>) => {
+  const inFlightCount = useSignal(0)
+  const hoverTimeout = useRef<number | null>(null)
+
+  as = as.toLowerCase() as keyof JSX.IntrinsicElements
+  method = method.toLowerCase() as Method
+  const [_href, _data] = mergeDataIntoQueryString(method, href || '', data, queryStringArrayFormat)
+  href = _href
+  data = _data
+
+  const baseParams = {
+    data,
+    method,
+    preserveScroll,
+    preserveState: preserveState ?? method !== 'get',
+    replace,
+    only,
+    except,
+    headers,
+    async,
+  }
+
+  const visitParams = {
+    ...baseParams,
+    onCancelToken,
+    onBefore,
+    onStart(event) {
+      inFlightCount.value += 1
+      onStart(event)
+    },
+    onProgress,
+    onFinish(event) {
+      inFlightCount.value -= 1
+      onFinish(event)
+    },
+    onCancel,
+    onSuccess,
+    onError,
+  } satisfies VisitOptions
+
+  const prefetchModes: LinkPrefetchOption[] = useMemo(
+    () => {
+      if (prefetch === true) {
+        return ['hover']
+      }
+
+      if (prefetch === false) {
+        return []
+      }
+
+      if (Array.isArray(prefetch)) {
+        return prefetch
+      }
+
+      return [prefetch]
+    },
+    Array.isArray(prefetch) ? prefetch : [prefetch],
+  )
+
+  const cacheForValue = useMemo(() => {
+    if (cacheFor !== 0) {
+      // from: https://github.com/inertiajs/inertia/blob/master/packages/react/src/Link.ts
+      // If they've provided a value, respect it
+      return cacheFor
     }
 
-    delete copy['as']
-    if (copy.href) {
-      delete copy['href']
+    if (prefetchModes.length === 1 && prefetchModes[0] === 'click') {
+      // from: https://github.com/inertiajs/inertia/blob/master/packages/react/src/Link.ts
+      // If they've only provided a prefetch mode of 'click',
+      // we should only prefetch for the next request but not keep it around
+      return 0
     }
 
-    return copy
-  }, Object.values(props))
+    // from: https://github.com/inertiajs/inertia/blob/master/packages/react/src/Link.ts
+    // Otherwise, default to 30 seconds
+    return 30_000
+  }, [cacheFor, prefetchModes])
+
+  const doPrefetch = () => {
+    router.prefetch(href, baseParams, { cacheFor: cacheForValue })
+  }
 
   useEffect(() => {
-    if (as === 'a' && method !== 'get') {
-      console.warn(
-        `Creating POST/PUT/PATCH/DELETE <a> links is discouraged as it causes "Open Link in New Tab/Window" accessibility issues.\n\nPlease specify a more appropriate element using the "as" attribute. For example:\n\n<Link href="${props.href}" method="${method}" as="button">...</Link>`
-      )
+    return () => {
+      if (hoverTimeout.current) {
+        clearTimeout(hoverTimeout.current)
+      }
     }
-  }, [as, props.href, method])
+  }, [])
 
-  function onClick (this: GlobalEventHandlers, event: MouseEvent) {
-    props.onclick?.bind(this)?.(event)
-    if (shouldIntercept(event as unknown as KeyboardEvent)) {
-      event.preventDefault();
-
-      router.visit(props.href, visitOptions)
+  useEffect(() => {
+    if (prefetchModes.includes('mount')) {
+      setTimeout(() => doPrefetch())
     }
+  }, prefetchModes)
+
+  const regularEvents: Partial<GlobalEventHandlers> = {
+    onclick: (event) => {
+      // @ts-expect-error idk how to do define this
+      onclick(event)
+
+      if (shouldIntercept(event)) {
+        event.preventDefault()
+
+        router.visit(href, visitParams)
+      }
+    },
+  }
+
+  const prefetchHoverEvents: Partial<GlobalEventHandlers> = {
+    onmouseenter: () => {
+      hoverTimeout.current = window.setTimeout(() => {
+        doPrefetch()
+      }, 75)
+    },
+    onmouseleave: () => {
+      if (hoverTimeout.current) {
+        clearTimeout(hoverTimeout.current)
+      }
+    },
+    onclick: regularEvents.onclick,
+  }
+
+  const prefetchClickEvents: Partial<GlobalEventHandlers> = {
+    onmousedown: (event) => {
+      if (shouldIntercept(event)) {
+        event.preventDefault()
+        doPrefetch()
+      }
+    },
+    onmouseup: (event) => {
+      event.preventDefault()
+      router.visit(href, visitParams)
+    },
+    onclick: (event) => {
+      // @ts-expect-error idk how to do define this
+      onclick(event)
+
+      if (shouldIntercept(event)) {
+        // Let the mouseup event handle the visit
+        event.preventDefault()
+      }
+    },
+  }
+
+  if (method !== 'get') {
+    as = 'button'
+  }
+
+  const elProps = {
+    a: { href },
+    button: { type: 'button' },
   }
 
   return createElement(
-    props.as ?? 'a',
+    as,
     {
-      ...elmProps,
-      onclick: onClick,
-      href: as === 'a' ? props.href : undefined,
+      ...props,
+      // @ts-expect-error we use GlobalEventHandlers here instead of the proper type for convention  
+      ...(elProps[as] || {}),
+      ...(() => {
+        if (prefetchModes.includes('hover')) {
+          return prefetchHoverEvents
+        }
+
+        if (prefetchModes.includes('click')) {
+          return prefetchClickEvents
+        }
+
+        return regularEvents
+      })(),
+      'data-loading': inFlightCount.value > 0 ? '' : undefined,
     },
-    [props.children]
+    children,
   )
 }
+
+Link.displayName = 'InertiaLink'
