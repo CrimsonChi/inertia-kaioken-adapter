@@ -1,6 +1,6 @@
 {
   "name": "inertia-kaioken-adapter",
-  "version": "1.0.11",
+  "version": "1.0.12-0",
   "type": "module",
   "files": [
     "dist"
