@@ -7,3 +7,5 @@ export const encodeHtmlEntities = (text: string): string => {
     .replace(/'/g, "&#039;")
     .replace(/\//g, "&#47;")
 }
+
+export const noop = () => {}
